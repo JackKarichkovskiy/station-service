@@ -3,6 +3,7 @@ package edu.kpi.fiot.stationservice.service.dao.dto;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="DRIVERS")
+@Table(name="drivers")
 @XmlRootElement
 public class Driver {
 
@@ -20,9 +21,7 @@ public class Driver {
 	private String id;
 	
 	@OneToOne
-	private Bus bus;
-	
-	@OneToOne
+	@JoinColumn(name="user_info_id")
 	private UserInfo userInfo;
 
 	public String getId() {
@@ -31,14 +30,6 @@ public class Driver {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public Bus getBus() {
-		return bus;
-	}
-
-	public void setBus(Bus bus) {
-		this.bus = bus;
 	}
 
 	public UserInfo getUserInfo() {

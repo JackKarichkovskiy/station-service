@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "USER_INFO")
+@Table(name = "user_info")
 @XmlRootElement
 public class UserInfo {
 
@@ -19,10 +19,10 @@ public class UserInfo {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@Column(name = "FIRST_NAME")
+	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name = "LAST_NAME")
+	@Column(name = "last_name")
 	private String lastName;
 
 	public String getId() {

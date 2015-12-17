@@ -4,25 +4,32 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name="buses")
+@Table(name="tickets")
 @XmlRootElement
-public class Bus {
-
+public class Ticket {
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
 	@OneToOne
-	@JoinColumn(name="driver_id")
-	private Driver driver;
+	@JoinColumn(name="bus_id")
+	@NotFound(action=NotFoundAction.IGNORE)
+	private Bus bus;
+	
+//	@ManyToOne
+//	@JoinColumn(name="station_id")
+//	private Station station;
 
 	public String getId() {
 		return id;
@@ -32,13 +39,19 @@ public class Bus {
 		this.id = id;
 	}
 
-	public Driver getDriver() {
-		return driver;
+	public Bus getBus() {
+		return bus;
 	}
 
-	public void setDriver(Driver driver) {
-		this.driver = driver;
+	public void setBus(Bus bus) {
+		this.bus = bus;
 	}
-	
-	
+
+//	public Station getStation() {
+//		return station;
+//	}
+//
+//	public void setStation(Station station) {
+//		this.station = station;
+//	}
 }

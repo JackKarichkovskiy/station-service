@@ -9,13 +9,15 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/stationdb</property>
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <property name="hibernate.cache.use_second_level_cache">false</property>
         <property name="show_sql">true</property>
         
         <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Bus"/>
         <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Driver"/>
         <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.UserInfo"/>
+        <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Station"/>
+        <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Ticket"/>
         
         
     </session-factory>
