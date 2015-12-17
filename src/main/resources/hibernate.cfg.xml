@@ -13,7 +13,9 @@
         <property name="hibernate.cache.use_second_level_cache">false</property>
         <property name="show_sql">true</property>
         
-        <mapping class="org.kskteam.projects.cardcontrolproject.service.dao.dto.transaction.Transaction"/>
+        <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Bus"/>
+        <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.Driver"/>
+        <mapping class="edu.kpi.fiot.stationservice.service.dao.dto.UserInfo"/>
         
         
     </session-factory>
