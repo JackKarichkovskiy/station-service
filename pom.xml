@@ -52,8 +52,13 @@
 			<!-- use the following artifactId if you don't need servlet 2.x compatibility -->
 			<!-- artifactId>jersey-container-servlet</artifactId -->
 		</dependency>
-		<!-- uncomment this to get JSON support <dependency> <groupId>org.glassfish.jersey.media</groupId> 
-			<artifactId>jersey-media-moxy</artifactId> </dependency> -->
+
+		<!-- JSON support -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+		</dependency>
+
 		<!-- Hibernate library dependency -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

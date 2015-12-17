@@ -35,12 +35,13 @@ public class HibernateService extends JPAService{
 	}
 
 	@Override
-	public void insert(Object obj) {
+	public Serializable insert(Object obj) {
 		Session session = factory.openSession();
 		session.beginTransaction();
-		session.save(obj);
+		Serializable newId = session.save(obj);
 		session.getTransaction().commit();
 		session.close();
+		return newId;
 	}
 
 	@Override

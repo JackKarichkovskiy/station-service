@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface DatabaseService {
-	void insert(Object obj);
+	Serializable insert(Object obj);
 	
 	<T extends Serializable, V> V read(T id, Class<V> objClass);
 	
