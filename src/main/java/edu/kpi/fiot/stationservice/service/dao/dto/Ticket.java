@@ -1,6 +1,7 @@
 package edu.kpi.fiot.stationservice.service.dao.dto;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,10 +27,6 @@ public class Ticket {
 	@JoinColumn(name="bus_id")
 	@NotFound(action=NotFoundAction.IGNORE)
 	private Bus bus;
-	
-//	@ManyToOne
-//	@JoinColumn(name="station_id")
-//	private Station station;
 
 	public String getId() {
 		return id;
@@ -46,12 +43,4 @@ public class Ticket {
 	public void setBus(Bus bus) {
 		this.bus = bus;
 	}
-
-//	public Station getStation() {
-//		return station;
-//	}
-//
-//	public void setStation(Station station) {
-//		this.station = station;
-//	}
 }

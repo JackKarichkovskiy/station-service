@@ -1,9 +1,12 @@
 package edu.kpi.fiot.stationservice.service.dao.dto;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -24,9 +27,8 @@ public class Station {
 	
 	private String name;
 	
-	@OneToMany
-	@XmlTransient
-	private List<Ticket> tickets = new ArrayList<>();
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	private Collection<Ticket> tickets = new ArrayList<>();
 
 	public String getId() {
 		return id;
@@ -44,11 +46,12 @@ public class Station {
 		this.name = name;
 	}
 
-	public List<Ticket> getTickets() {
+	@XmlTransient
+	public Collection<Ticket> getTickets() {
 		return tickets;
 	}
 
-	public void setTickets(List<Ticket> tickets) {
+	public void setTickets(Collection<Ticket> tickets) {
 		this.tickets = tickets;
 	}
 }

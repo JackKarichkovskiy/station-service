@@ -1,6 +1,6 @@
 package edu.kpi.fiot.stationservice.resource;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,12 +20,12 @@ public class TicketResource {
 	private TicketService ts = TicketService.getInstance();
 	
 	@GET
-	public List<Ticket> getAllTickets(@PathParam("stationId") String stationId) {
+	public Collection<Ticket> getAllTickets(@PathParam("stationId") String stationId) {
 		return ts.getAllTicketsFromStation(stationId);
 	}
 	
 	@POST
-	public Ticket addComment(@PathParam("stationId") String stationId, Ticket ticket) {
+	public Ticket addTicket(@PathParam("stationId") String stationId, Ticket ticket) {
 		return ts.addTicketToStation(stationId, ticket);
 	}
 }
