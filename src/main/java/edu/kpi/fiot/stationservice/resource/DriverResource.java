@@ -26,13 +26,13 @@ private DatabaseService ds = HibernateService.getInstance();
 	
 	@GET
 	@Path("/{driverId}")
-    public Driver getBus(@PathParam("driverId")String driverId) {
+    public Driver getDriver(@PathParam("driverId")String driverId) {
 		Driver driver = ds.read(driverId, Driver.class);
         return driver;
     }
 	
 	@POST
-    public Response addBus(Driver newDriver, @Context UriInfo uriInfo) {
+    public Response addDriver(Driver newDriver, @Context UriInfo uriInfo) {
 		Serializable newId = ds.insert(newDriver);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(newId.toString()).build();
 		return Response.created(uri)

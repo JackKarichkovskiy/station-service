@@ -53,6 +53,8 @@ public class TicketService {
 		
 		Station station = session.get(Station.class, stationId);
 		station.getTickets().add(ticket);
+		ticket.setStation(station);
+		session.save(ticket);
 		Bus bus = ticket.getBus();
 		if(bus != null){
 			bus.getSeats().add(ticket);

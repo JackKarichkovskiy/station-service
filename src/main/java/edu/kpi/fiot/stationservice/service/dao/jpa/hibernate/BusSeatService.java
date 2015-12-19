@@ -1,7 +1,6 @@
 package edu.kpi.fiot.stationservice.service.dao.jpa.hibernate;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Hibernate;
@@ -56,12 +55,12 @@ public class BusSeatService {
 		session.beginTransaction();
 		
 		Bus bus = session.get(Bus.class, busId);
-		System.out.println(bus.getSeats().size());
+		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();
 		session.close();
 		
-		return new ArrayList<>(bus.getSeats());
+		return bus.getSeats();
 	}
 	
 	public List<Integer> getAllFreeSeatsInBus(String busId){

@@ -2,7 +2,6 @@ package edu.kpi.fiot.stationservice.service.dao.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -27,7 +26,7 @@ public class Station {
 	
 	private String name;
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "station", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
 	private Collection<Ticket> tickets = new ArrayList<>();
 
 	public String getId() {

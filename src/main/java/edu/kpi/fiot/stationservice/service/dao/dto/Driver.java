@@ -1,5 +1,6 @@
 package edu.kpi.fiot.stationservice.service.dao.dto;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,7 +21,7 @@ public class Driver {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="user_info_id")
 	private UserInfo userInfo;
 

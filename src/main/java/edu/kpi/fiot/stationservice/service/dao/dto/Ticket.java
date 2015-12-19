@@ -23,7 +23,21 @@ public class Ticket {
 	@JoinColumn(name="bus_id")
 	private Bus bus;
 	
+	@ManyToOne
+	@JoinColumn(name="station_id")
+	private Station station;
+	
 	private Integer seatNum;
+
+	private double cost;
+	
+	public double getCost() {
+		return cost;
+	}
+
+	public void setCost(double cost) {
+		this.cost = cost;
+	}
 
 	public String getId() {
 		return id;
@@ -47,5 +61,13 @@ public class Ticket {
 
 	public void setSeatNum(Integer seatNum) {
 		this.seatNum = seatNum;
+	}
+
+	public Station getStation() {
+		return station;
+	}
+
+	public void setStation(Station station) {
+		this.station = station;
 	}
 }
