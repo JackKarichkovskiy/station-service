@@ -1,18 +1,14 @@
 package edu.kpi.fiot.stationservice.service.dao.dto;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="tickets")
@@ -23,10 +19,11 @@ public class Ticket {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="bus_id")
-	@NotFound(action=NotFoundAction.IGNORE)
 	private Bus bus;
+	
+	private Integer seatNum;
 
 	public String getId() {
 		return id;
@@ -42,5 +39,13 @@ public class Ticket {
 
 	public void setBus(Bus bus) {
 		this.bus = bus;
+	}
+
+	public Integer getSeatNum() {
+		return seatNum;
+	}
+
+	public void setSeatNum(Integer seatNum) {
+		this.seatNum = seatNum;
 	}
 }

@@ -1,12 +1,12 @@
 package edu.kpi.fiot.stationservice.service.dao.jpa.hibernate;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
 import edu.kpi.fiot.stationservice.service.dao.dto.Station;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 
@@ -41,7 +41,6 @@ public class TicketService {
 		Station station = session.get(Station.class, stationId);
 		Hibernate.initialize(station.getTickets());
 
-		System.out.println(station.getTickets().toString());
 		session.getTransaction().commit();
 		session.close();
 
@@ -54,6 +53,11 @@ public class TicketService {
 		
 		Station station = session.get(Station.class, stationId);
 		station.getTickets().add(ticket);
+		Bus bus = ticket.getBus();
+		if(bus != null){
+			bus.getSeats().add(ticket);
+			session.update(bus);
+		}
 		session.update(station);
 		
 		session.getTransaction().commit();

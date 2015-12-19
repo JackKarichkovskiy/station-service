@@ -13,18 +13,19 @@ import javax.ws.rs.core.MediaType;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.TicketService;
 
-@Path("/")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public class TicketResource {
 	private TicketService ts = TicketService.getInstance();
 	
 	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Collection<Ticket> getAllTickets(@PathParam("stationId") String stationId) {
 		return ts.getAllTicketsFromStation(stationId);
 	}
 	
 	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Ticket addTicket(@PathParam("stationId") String stationId, Ticket ticket) {
 		return ts.addTicketToStation(stationId, ticket);
 	}
