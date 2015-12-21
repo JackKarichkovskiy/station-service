@@ -36,6 +36,7 @@ public class BusResource {
 	@POST
 	public Response addBus(Bus newBus, @Context UriInfo uriInfo) {
 		Serializable newId = ds.insert(newBus);
+		
 		URI uri = uriInfo.getAbsolutePathBuilder().path(newId.toString()).build();
 		return Response.created(uri).entity(newBus).build();
 	}

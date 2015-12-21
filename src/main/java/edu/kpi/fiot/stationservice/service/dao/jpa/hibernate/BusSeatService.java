@@ -10,12 +10,11 @@ import org.hibernate.Session;
 import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 
-
 public class BusSeatService {
 	private HibernateService service = HibernateService.getInstance();
-	
+
 	private static BusSeatService instance;
-	
+
 	/**
 	 * Constructor of Singleton instance
 	 * 
@@ -34,54 +33,61 @@ public class BusSeatService {
 		else
 			return instance = new BusSeatService("");
 	}
-	
-	public Ticket addSeatToBus(String busId, Ticket ticket){
+
+	public Ticket addSeatToBus(String busId, Ticket ticket) {
 		Session session = service.getSession();
 		session.beginTransaction();
-		
+
 		Bus bus = session.get(Bus.class, busId);
 		bus.getSeats().add(ticket);
 		session.save(ticket);
 		session.update(bus);
-		
+
 		session.getTransaction().commit();
 		session.close();
-		
+
 		return ticket;
 	}
-	
-	public List<Ticket> getAllOrderedSeatsInBus(String busId){
+
+	public List<Ticket> getAllOrderedSeatsInBus(String busId) {
 		Session session = service.getSession();
 		session.beginTransaction();
-		
+
 		Bus bus = session.get(Bus.class, busId);
 		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();
 		session.close();
-		
+
 		return bus.getSeats();
 	}
-	
-	public List<Integer> getAllFreeSeatsInBus(String busId){
+
+	public List<Ticket> getAllFreeSeatsInBus(String busId) {
 		Session session = service.getSession();
 		session.beginTransaction();
-		
+
 		Bus bus = session.get(Bus.class, busId);
 		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();
 		session.close();
-		
+
 		List<Ticket> allOrderedSeats = (List<Ticket>) bus.getSeats();
-		List<Integer> freeSeats = new ArrayList<>();
-		
-		for(int i = 0; i < bus.getCapacity(); i++){
-			if(!allOrderedSeats.contains(i)){
-				freeSeats.add(i);
+		List<Ticket> freeSeats = new ArrayList<>();
+
+		outer:
+		for (int i = 0; i < bus.getCapacity(); i++) {
+			for (int j = 0; j < allOrderedSeats.size(); j++) {
+				if (allOrderedSeats.get(j).getSeatNum().equals(i)) {
+					continue outer;
+				}
 			}
+
+			Ticket ticket = new Ticket();
+			ticket.setSeatNum(i);
+			freeSeats.add(ticket);
 		}
-		
+
 		return freeSeats;
 	}
 }

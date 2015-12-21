@@ -2,6 +2,7 @@ package edu.kpi.fiot.stationservice.resource;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -41,7 +42,7 @@ public class BusSeatsResource {
 	@Path("/freeSeats")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Collection<Integer> getAllFreeSeats(@PathParam("busId") String busId){
+	public List<Ticket> getAllFreeSeats(@PathParam("busId") String busId){
 		return busService.getAllFreeSeatsInBus(busId);
 	}
 }
