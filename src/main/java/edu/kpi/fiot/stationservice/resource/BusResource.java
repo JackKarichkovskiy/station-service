@@ -2,8 +2,10 @@ package edu.kpi.fiot.stationservice.resource;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -27,6 +29,12 @@ public class BusResource {
 	private DatabaseService ds = HibernateService.getInstance();
 
 	@GET
+	public List<Bus> getAllBuses() {
+		List<Bus> allBuses = ds.getAllEntities(Bus.class);
+		return allBuses;
+	}
+	
+	@GET
 	@Path("/{busId}")
 	public Bus getBus(@PathParam("busId") String busId) {
 		Bus bus = ds.read(busId, Bus.class);
@@ -48,7 +56,16 @@ public class BusResource {
 		ds.update(updatedBus);
 		return Response.ok().entity(updatedBus).build();
 	}
-
+	
+	@DELETE
+	@Path("/{busId}")
+	public Response deleteBus(@PathParam("busId") String busId) {
+		Bus bus = new Bus();
+		bus.setId(busId);
+		ds.delete(bus);
+		return Response.ok().entity(bus).build();
+	}
+	
 	@Path("/{busId}/seats")
 	public BusSeatsResource getBusSeatsResourceResource() {
 		return new BusSeatsResource();

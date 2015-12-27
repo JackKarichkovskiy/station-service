@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
@@ -49,6 +50,25 @@ public class BusSeatService {
 		return ticket;
 	}
 
+	public Ticket getTicketBySeatNum(String busId, Integer seatNum){
+		Session session = service.getSession();
+		session.beginTransaction();
+
+		Query query = session.createQuery(HQLQueries.GET_TICKET_BY_SEAT);
+		query.setString("busId", busId);
+		query.setInteger("seatNum", seatNum);
+		List<Ticket> tickets = query.list();
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		if(tickets == null || tickets.isEmpty()){
+			return null;
+		}else{
+			return tickets.get(0);
+		}
+	}
+
 	public List<Ticket> getAllOrderedSeatsInBus(String busId) {
 		Session session = service.getSession();
 		session.beginTransaction();
@@ -75,8 +95,7 @@ public class BusSeatService {
 		List<Ticket> allOrderedSeats = (List<Ticket>) bus.getSeats();
 		List<Ticket> freeSeats = new ArrayList<>();
 
-		outer:
-		for (int i = 0; i < bus.getCapacity(); i++) {
+		outer: for (int i = 0; i < bus.getCapacity(); i++) {
 			for (int j = 0; j < allOrderedSeats.size(); j++) {
 				if (allOrderedSeats.get(j).getSeatNum().equals(i)) {
 					continue outer;
@@ -89,5 +108,41 @@ public class BusSeatService {
 		}
 
 		return freeSeats;
+	}
+
+	public Ticket[] getAllSeatsInBus(String busId) {
+		Session session = service.getSession();
+		session.beginTransaction();
+
+		Bus bus = session.get(Bus.class, busId);
+		Hibernate.initialize(bus.getSeats());
+
+		session.getTransaction().commit();
+		session.close();
+		
+		if(bus == null) return new Ticket[0];
+		
+		Ticket[] allSeats = new Ticket[bus.getCapacity()];
+		
+		for(Ticket ticket : bus.getSeats()){
+			allSeats[ticket.getSeatNum()] = ticket;
+		}
+		
+		for (int i = 0; i < allSeats.length; i++) {
+			if(allSeats[i] == null){
+				Ticket ticket = new Ticket();
+				ticket.setSeatNum(i);
+				allSeats[i] = ticket;
+			}
+		}
+		
+		return allSeats;
+	}
+
+	private interface HQLQueries {
+		String BUS_ID_TAG = ":busId";
+		String SEAT_NUM_TAG = ":seatNum";
+		String GET_TICKET_BY_SEAT = "from Ticket as t where t.bus.id = " + BUS_ID_TAG + " and t.seatNum = "
+				+ SEAT_NUM_TAG;
 	}
 }
