@@ -2,10 +2,13 @@ package edu.kpi.fiot.stationservice.resource;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -38,13 +41,34 @@ private final Class<Driver> resourceClass = Driver.class;
 		}
         return driver;
     }
+
+	@GET
+	public List<Driver> getAllDrivers() {
+		List<Driver> allDrivers = ds.getAllEntities(Driver.class);
+		return allDrivers;
+	}
+	
+	@PUT
+	@Path("/{driverId}")
+	public Response updateBus(@PathParam("driverId") String driverId, Driver updatedDriver) {
+		updatedDriver.setId(driverId);
+		ds.update(updatedDriver);
+		return Response.ok().entity(updatedDriver).build();
+	}
+
+	@DELETE
+	@Path("/{driverId}")
+	public Response deleteBus(@PathParam("driverId") String driverId) {
+		Driver driver = new Driver();
+		driver.setId(driverId);
+		ds.delete(driver);
+		return Response.ok().entity(driver).build();
+	}
 	
 	@POST
-    public Response addDriver(Driver newDriver, @Context UriInfo uriInfo) {
+	public Response addDriver(Driver newDriver, @Context UriInfo uriInfo) {
 		Serializable newId = ds.insert(newDriver);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(newId.toString()).build();
-		return Response.created(uri)
-				.entity(newDriver)
-				.build();
-    }
+		return Response.created(uri).entity(newDriver).build();
+	}
 }

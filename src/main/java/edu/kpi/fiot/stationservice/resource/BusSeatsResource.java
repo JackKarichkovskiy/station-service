@@ -18,12 +18,12 @@ import javax.ws.rs.core.UriInfo;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.BusSeatService;
 
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class BusSeatsResource {
 	private BusSeatService busService = BusSeatService.getInstance();
 	
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addSeat(@PathParam("busId") String busId,  Ticket ticket, @Context UriInfo uriInfo) {
 		Ticket newSeat = busService.addSeatToBus(busId, ticket);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(newSeat.getId()).build();
@@ -31,8 +31,14 @@ public class BusSeatsResource {
 	}
 	
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/{seatNumber}")
+	public Ticket getTicketBySeatNum(@PathParam("busId") String busId,
+			@PathParam("seatNumber") Integer seatNumber){
+		return busService.getTicketBySeatNum(busId, seatNumber);
+	}
+	
+	@GET
+	@Path("/orderedSeats")
 	public Collection<Ticket> getAllOrderedSeats(@PathParam("busId") String busId) {
 	    Collection<Ticket> allOrderedSeatsInBus = busService.getAllOrderedSeatsInBus(busId);
 		return allOrderedSeatsInBus;
@@ -40,9 +46,12 @@ public class BusSeatsResource {
 	
 	@GET
 	@Path("/freeSeats")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public List<Ticket> getAllFreeSeats(@PathParam("busId") String busId){
 		return busService.getAllFreeSeatsInBus(busId);
+	}
+	
+	@GET
+	public Ticket[] getAllSeats(@PathParam("busId") String busId){
+		return busService.getAllSeatsInBus(busId);
 	}
 }
