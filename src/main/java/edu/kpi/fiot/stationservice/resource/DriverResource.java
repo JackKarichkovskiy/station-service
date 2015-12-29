@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.kpi.fiot.stationservice.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.DatabaseService;
 import edu.kpi.fiot.stationservice.service.dao.dto.Driver;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
@@ -23,11 +25,17 @@ import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class DriverResource {
 private DatabaseService ds = HibernateService.getInstance();
+
+private final Class<Driver> resourceClass = Driver.class;
 	
 	@GET
 	@Path("/{driverId}")
     public Driver getDriver(@PathParam("driverId")String driverId) {
-		Driver driver = ds.read(driverId, Driver.class);
+		Driver driver = ds.read(driverId, resourceClass);
+		if(driver == null){
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, resourceClass.getName());
+			throw new DataNotFoundException(errMessage);
+		}
         return driver;
     }
 	

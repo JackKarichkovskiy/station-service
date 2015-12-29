@@ -12,23 +12,29 @@ import org.hibernate.cfg.Configuration;
 
 import edu.kpi.fiot.stationservice.service.dao.jpa.JPAService;
 
-public class HibernateService extends JPAService{
-	
+import static edu.kpi.fiot.stationservice.utils.ServiceUtils.checkNotNull;
+
+public class HibernateService extends JPAService {
+
 	private static HibernateService instance;
 
 	private SessionFactory factory;
-	
+
 	/**
 	 * Constructor of Singleton instance
-	 * @param dummyStr - to prevent reflection initialization added non-valuable String argument
-	 * @throws HibernateException - if config file is wrong
+	 * 
+	 * @param dummyStr
+	 *            - to prevent reflection initialization added non-valuable
+	 *            String argument
+	 * @throws HibernateException
+	 *             - if config file is wrong
 	 */
-	private HibernateService(String dummyStr){
+	private HibernateService(String dummyStr) {
 		factory = new Configuration().configure().buildSessionFactory();
 	}
-	
-	public static HibernateService getInstance(){
-		if(instance != null)
+
+	public static HibernateService getInstance() {
+		if (instance != null)
 			return instance;
 		else
 			return instance = new HibernateService("");
@@ -36,6 +42,8 @@ public class HibernateService extends JPAService{
 
 	@Override
 	public Serializable insert(Object obj) {
+		checkNotNull(obj);
+
 		Session session = factory.openSession();
 		session.beginTransaction();
 		Serializable newId = session.save(obj);
@@ -46,6 +54,8 @@ public class HibernateService extends JPAService{
 
 	@Override
 	public void update(Object obj) {
+		checkNotNull(obj);
+
 		Session session = factory.openSession();
 		session.beginTransaction();
 		session.update(obj);
@@ -55,6 +65,8 @@ public class HibernateService extends JPAService{
 
 	@Override
 	public void delete(Object obj) {
+		checkNotNull(obj);
+
 		Session session = factory.openSession();
 		session.beginTransaction();
 		session.delete(obj);
@@ -64,17 +76,22 @@ public class HibernateService extends JPAService{
 
 	@Override
 	public <T extends Serializable, V> V read(T id, Class<V> objClass) {
-		V result = null;
+		checkNotNull(id);
+		checkNotNull(objClass);
+
 		Session session = factory.openSession();
 		session.beginTransaction();
-		result = session.get(objClass, id);
+		V result = session.get(objClass, id);
 		session.getTransaction().commit();
 		session.close();
+		
 		return result;
 	}
 
 	@Override
 	public <T> List<T> getAllEntities(Class<T> objClass) {
+		checkNotNull(objClass);
+		
 		List<T> resultList = new ArrayList<>();
 
 		Session session = factory.openSession();
@@ -83,21 +100,21 @@ public class HibernateService extends JPAService{
 		resultList = criteria.list();
 		session.getTransaction().commit();
 		session.close();
-		
+
 		return resultList;
 	}
 
-	public SessionFactory getSessionFactory(){
+	public SessionFactory getSessionFactory() {
 		return factory;
 	}
-	
-	public Session getSession(){
+
+	public Session getSession() {
 		return factory.openSession();
 	}
-	
-	public void destroy(){
-		if(factory != null){
+
+	public void destroy() {
+		if (factory != null) {
 			factory.close();
 		}
-	}	
+	}
 }
