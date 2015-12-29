@@ -8,7 +8,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
+import edu.kpi.fiot.stationservice.service.dao.dto.Station;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 
 public class BusSeatService {
@@ -74,6 +77,10 @@ public class BusSeatService {
 		session.beginTransaction();
 
 		Bus bus = session.get(Bus.class, busId);
+		if (bus == null) {
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, Bus.class.getName());
+			throw new DataNotFoundException(errMessage);
+		}
 		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();
@@ -87,6 +94,10 @@ public class BusSeatService {
 		session.beginTransaction();
 
 		Bus bus = session.get(Bus.class, busId);
+		if (bus == null) {
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, Bus.class.getName());
+			throw new DataNotFoundException(errMessage);
+		}
 		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();
@@ -115,6 +126,10 @@ public class BusSeatService {
 		session.beginTransaction();
 
 		Bus bus = session.get(Bus.class, busId);
+		if (bus == null) {
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, Bus.class.getName());
+			throw new DataNotFoundException(errMessage);
+		}
 		Hibernate.initialize(bus.getSeats());
 
 		session.getTransaction().commit();

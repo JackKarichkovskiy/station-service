@@ -6,6 +6,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
 import edu.kpi.fiot.stationservice.service.dao.dto.Station;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
@@ -36,35 +38,50 @@ public class TicketService {
 
 	public Collection<Ticket> getAllTicketsFromStation(String stationId) {
 		Session session = service.getSession();
-		session.beginTransaction();
-		
-		Station station = session.get(Station.class, stationId);
-		Hibernate.initialize(station.getTickets());
+		Station station = null;
+		try {
+			session.beginTransaction();
 
-		session.getTransaction().commit();
-		session.close();
+			station = session.get(Station.class, stationId);
+			if (station == null) {
+				String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, Station.class.getName());
+				throw new DataNotFoundException(errMessage);
+			}
+			Hibernate.initialize(station.getTickets());
+
+			session.getTransaction().commit();
+		} finally {
+			session.close();
+		}
 
 		return station.getTickets();
 	}
 
 	public Ticket addTicketToStation(String stationId, Ticket ticket) {
 		Session session = service.getSession();
-		session.beginTransaction();
-		
-		Station station = session.get(Station.class, stationId);
-		station.getTickets().add(ticket);
-		ticket.setStation(station);
-		session.save(ticket);
-		Bus bus = ticket.getBus();
-		if(bus != null){
-			bus.getSeats().add(ticket);
-			session.update(bus);
+		try {
+			session.beginTransaction();
+
+			Station station = session.get(Station.class, stationId);
+			if (station == null) {
+				String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, Station.class.getName());
+				throw new DataNotFoundException(errMessage);
+			}
+			station.getTickets().add(ticket);
+			ticket.setStation(station);
+			session.save(ticket);
+			Bus bus = ticket.getBus();
+			if (bus != null) {
+				bus.getSeats().add(ticket);
+				session.update(bus);
+			}
+			session.update(station);
+
+			session.getTransaction().commit();
+		} finally {
+			session.close();
 		}
-		session.update(station);
-		
-		session.getTransaction().commit();
-		session.close();
-		
+
 		return ticket;
 	}
 }

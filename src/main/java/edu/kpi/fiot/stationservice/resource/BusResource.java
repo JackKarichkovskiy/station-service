@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.DatabaseService;
 import edu.kpi.fiot.stationservice.service.dao.dto.Bus;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
@@ -28,23 +30,29 @@ public class BusResource {
 
 	private DatabaseService ds = HibernateService.getInstance();
 
+	private final Class<Bus> resourceClass = Bus.class;
+
 	@GET
 	public List<Bus> getAllBuses() {
-		List<Bus> allBuses = ds.getAllEntities(Bus.class);
+		List<Bus> allBuses = ds.getAllEntities(resourceClass);
 		return allBuses;
 	}
-	
+
 	@GET
 	@Path("/{busId}")
 	public Bus getBus(@PathParam("busId") String busId) {
-		Bus bus = ds.read(busId, Bus.class);
+		Bus bus = ds.read(busId, resourceClass);
+		if (bus == null) {
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, resourceClass.getName());
+			throw new DataNotFoundException(errMessage);
+		}
 		return bus;
 	}
 
 	@POST
 	public Response addBus(Bus newBus, @Context UriInfo uriInfo) {
 		Serializable newId = ds.insert(newBus);
-		
+
 		URI uri = uriInfo.getAbsolutePathBuilder().path(newId.toString()).build();
 		return Response.created(uri).entity(newBus).build();
 	}
@@ -56,7 +64,7 @@ public class BusResource {
 		ds.update(updatedBus);
 		return Response.ok().entity(updatedBus).build();
 	}
-	
+
 	@DELETE
 	@Path("/{busId}")
 	public Response deleteBus(@PathParam("busId") String busId) {
@@ -65,7 +73,7 @@ public class BusResource {
 		ds.delete(bus);
 		return Response.ok().entity(bus).build();
 	}
-	
+
 	@Path("/{busId}/seats")
 	public BusSeatsResource getBusSeatsResourceResource() {
 		return new BusSeatsResource();

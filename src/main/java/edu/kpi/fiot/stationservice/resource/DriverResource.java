@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import edu.kpi.fiot.stationservice.exception.DataNotFoundException;
-import edu.kpi.fiot.stationservice.exception.ErrorMessages;
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.DatabaseService;
 import edu.kpi.fiot.stationservice.service.dao.dto.Driver;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
@@ -44,13 +44,13 @@ private final Class<Driver> resourceClass = Driver.class;
 
 	@GET
 	public List<Driver> getAllDrivers() {
-		List<Driver> allDrivers = ds.getAllEntities(Driver.class);
+		List<Driver> allDrivers = ds.getAllEntities(resourceClass);
 		return allDrivers;
 	}
 	
 	@PUT
 	@Path("/{driverId}")
-	public Response updateBus(@PathParam("driverId") String driverId, Driver updatedDriver) {
+	public Response updateDriver(@PathParam("driverId") String driverId, Driver updatedDriver) {
 		updatedDriver.setId(driverId);
 		ds.update(updatedDriver);
 		return Response.ok().entity(updatedDriver).build();
@@ -58,7 +58,7 @@ private final Class<Driver> resourceClass = Driver.class;
 
 	@DELETE
 	@Path("/{driverId}")
-	public Response deleteBus(@PathParam("driverId") String driverId) {
+	public Response deleteDriver(@PathParam("driverId") String driverId) {
 		Driver driver = new Driver();
 		driver.setId(driverId);
 		ds.delete(driver);

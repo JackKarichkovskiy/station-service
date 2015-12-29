@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.BusSeatService;
 
@@ -34,7 +36,12 @@ public class BusSeatsResource {
 	@Path("/{seatNumber}")
 	public Ticket getTicketBySeatNum(@PathParam("busId") String busId,
 			@PathParam("seatNumber") Integer seatNumber){
-		return busService.getTicketBySeatNum(busId, seatNumber);
+		Ticket ticket = busService.getTicketBySeatNum(busId, seatNumber);
+		if(ticket == null){
+			String errMessage = String.format(ErrorMessages.SEAT_NOT_FOUND, seatNumber);
+			throw new DataNotFoundException(errMessage);
+		}
+		return ticket;
 	}
 	
 	@GET

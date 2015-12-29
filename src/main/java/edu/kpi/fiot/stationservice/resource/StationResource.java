@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.DatabaseService;
 import edu.kpi.fiot.stationservice.service.dao.dto.Station;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
@@ -26,17 +28,23 @@ import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class StationResource {
 	private DatabaseService ds = HibernateService.getInstance();
+	
+	private final Class<Station> resourceClass = Station.class;
 
 	@GET
 	public List<Station> getAllStations() {
-		List<Station> allStations = ds.getAllEntities(Station.class);
+		List<Station> allStations = ds.getAllEntities(resourceClass);
 		return allStations;
 	}
 	
 	@GET
 	@Path("/{stationId}")
 	public Station getStation(@PathParam("stationId") String stationId) {
-		Station station = ds.read(stationId, Station.class);
+		Station station = ds.read(stationId, resourceClass);
+		if(station == null){
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, resourceClass.getName());
+			throw new DataNotFoundException(errMessage);
+		}
 		return station;
 	}
 

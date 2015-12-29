@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import edu.kpi.fiot.stationservice.resource.exception.DataNotFoundException;
+import edu.kpi.fiot.stationservice.resource.exception.ErrorMessages;
 import edu.kpi.fiot.stationservice.service.dao.DatabaseService;
 import edu.kpi.fiot.stationservice.service.dao.dto.Ticket;
 import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
@@ -22,15 +24,22 @@ import edu.kpi.fiot.stationservice.service.dao.jpa.hibernate.HibernateService;
 public class TicketResource {
 	private DatabaseService ds = HibernateService.getInstance();
 	
+	private final Class<Ticket> resourceClass = Ticket.class;
+	
 	@GET
 	public List<Ticket> getAllTickets() {
-		return ds.getAllEntities(Ticket.class);
+		return ds.getAllEntities(resourceClass);
 	}
 	
 	@GET
 	@Path("/{ticketId}")
 	public Ticket getTicket(@PathParam("ticketId") String ticketId) {
-		return ds.read(ticketId, Ticket.class);
+		Ticket ticket = ds.read(ticketId, resourceClass);
+		if(ticket == null){
+			String errMessage = String.format(ErrorMessages.DATA_NOT_FOUND, resourceClass.getName());
+			throw new DataNotFoundException(errMessage);
+		}
+		return ticket;
 	}
 
 	@PUT
@@ -43,7 +52,7 @@ public class TicketResource {
 
 	@DELETE
 	@Path("/{ticketId}")
-	public Response deleteBus(@PathParam("ticketId") String ticketId) {
+	public Response deleteTicket(@PathParam("ticketId") String ticketId) {
 		Ticket ticket = new Ticket();
 		ticket.setId(ticketId);
 		ds.delete(ticket);

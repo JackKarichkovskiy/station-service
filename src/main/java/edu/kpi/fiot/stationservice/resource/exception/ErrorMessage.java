@@ -1,4 +1,4 @@
-package edu.kpi.fiot.stationservice.exception;
+package edu.kpi.fiot.stationservice.resource.exception;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

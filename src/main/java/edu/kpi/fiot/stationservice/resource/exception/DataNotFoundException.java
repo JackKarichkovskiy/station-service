@@ -1,4 +1,4 @@
-package edu.kpi.fiot.stationservice.exception;
+package edu.kpi.fiot.stationservice.resource.exception;
 
 public class DataNotFoundException extends RuntimeException{
 
